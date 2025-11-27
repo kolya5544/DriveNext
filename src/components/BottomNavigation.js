@@ -63,7 +63,6 @@ const BottomNavigation = ({ activeTab, onTabPress }) => {
           </TouchableOpacity>
         ))}
       </View>
-      <View style={[styles.homeIndicator, { backgroundColor: theme.text }]} />
     </View>
   );
 };

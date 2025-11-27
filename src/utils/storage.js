@@ -68,10 +68,14 @@ export const isOnboardingCompleted = async () => {
   }
 };
 
-// Сохранение данных пользователя
-export const saveUserData = async userData => {
+// Сохранение / обновление данных пользователя (мердж с уже сохранёнными)
+export const saveUserData = async partialData => {
   try {
-    await AsyncStorage.setItem(KEYS.USER_DATA, JSON.stringify(userData));
+    const existing = await AsyncStorage.getItem(KEYS.USER_DATA);
+    const current = existing ? JSON.parse(existing) : {};
+    const next = { ...current, ...partialData };
+
+    await AsyncStorage.setItem(KEYS.USER_DATA, JSON.stringify(next));
     return true;
   } catch (error) {
     console.error('Ошибка сохранения данных пользователя:', error);

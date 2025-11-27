@@ -17,7 +17,7 @@ import { getTheme } from '../styles/colors';
 import { useTheme } from '../context/ThemeContext';
 import ThemeToggle from '../components/ThemeToggle';
 import { mockLogin } from '../utils/mockData';
-import { saveToken, saveUserData } from '../utils/storage';
+import { saveToken, saveUserData, getUserData } from '../utils/storage';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -50,14 +50,37 @@ const LoginScreen = ({ navigation }) => {
 
       if (result.success) {
         await saveToken(result.token);
-        await saveUserData({
-          ...result.user,
+
+        const existingProfile = await getUserData();
+        const userFromServer = result.user || {};
+        const base = existingProfile || {};
+
+        const mergedProfile = {
+          // Если пользователь уже регистрировался — оставляем его данные
+          firstName: base.firstName || userFromServer.firstName,
+          lastName: base.lastName || userFromServer.lastName,
+          middleName: base.middleName || userFromServer.middleName,
+          email: base.email || userFromServer.email || email,
+          avatarUri: base.avatarUri || userFromServer.avatarUri || null,
+
           gender:
-            result.user.gender || (result.user.genderValue === 'male' ? 'Мужской' : 'Женский'),
+            base.gender ||
+            userFromServer.gender ||
+            (userFromServer.genderValue === 'male'
+              ? 'Мужской'
+              : userFromServer.genderValue === 'female'
+                ? 'Женский'
+                : undefined),
+
           googleEmail:
-            result.user.googleEmail || `${result.user.firstName.toLowerCase()}ov@gmail.com`,
-          joinDate: result.user.joinDate || 'июль 2024',
-        });
+            base.googleEmail ||
+            userFromServer.googleEmail ||
+            `${(base.firstName || userFromServer.firstName || 'user').toLowerCase()}ov@gmail.com`,
+
+          joinDate: base.joinDate || userFromServer.joinDate || 'июль 2024',
+        };
+
+        await saveUserData(mergedProfile);
         navigation.replace('Home');
       } else {
         setErrors({

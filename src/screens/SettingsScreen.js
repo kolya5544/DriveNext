@@ -12,9 +12,10 @@ import SunIcon from '../components/icons/SunIcon';
 import BellIcon from '../components/icons/BellIcon';
 import MailIcon from '../components/icons/MailIcon';
 import HelpCircleIcon from '../components/icons/HelpCircleIcon';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const SettingsScreen = ({ navigation }) => {
-  const { isDark } = useTheme();
+  const { isDark, toggleTheme } = useTheme();
   const palette = getTheme(isDark);
 
   const [profile, setProfile] = useState(null);
@@ -43,6 +44,7 @@ const SettingsScreen = ({ navigation }) => {
         break;
       case 'theme':
         console.log('Тема');
+        toggleTheme();
         break;
       case 'notifications':
         console.log('Уведомления');
@@ -63,7 +65,7 @@ const SettingsScreen = ({ navigation }) => {
 
   const items = [
     { id: 'bookings', title: 'Мои бронирования', icon: '📑' },
-    { id: 'theme', title: 'Тема', icon: '☀️' },
+    { id: 'theme', title: isDark ? 'Тема: тёмная' : 'Тема: светлая', icon: '☀️' },
     { id: 'notifications', title: 'Уведомления', icon: '🔔' },
     { id: 'car', title: 'Подключить свой автомобиль', icon: '🚗' },
     { id: 'help', title: 'Помощь', icon: '❓' },
@@ -76,7 +78,7 @@ const SettingsScreen = ({ navigation }) => {
   const mail = profile?.email || 'ivan@mtuci.ru';
 
   return (
-    <View style={[styles.root, { backgroundColor: palette.background }]}>
+    <SafeAreaView style={[styles.root, { backgroundColor: palette.background }]} edges={['top']}>
       {/* Заголовок */}
       <View style={[styles.header, { backgroundColor: palette.background }]}>
         <Text style={[styles.headerText, { color: palette.text }]}>Настройки</Text>
@@ -92,7 +94,15 @@ const SettingsScreen = ({ navigation }) => {
         >
           <View style={styles.profileInfo}>
             <View style={[styles.avatarWrapper, { backgroundColor: '#EDEDED' }]}>
-              <View style={styles.avatarDot} />
+              {profile?.avatarUri ? (
+                <Image
+                  source={{ uri: profile.avatarUri }}
+                  style={styles.avatarImage}
+                  resizeMode="cover"
+                />
+              ) : (
+                <View style={styles.avatarDot} />
+              )}
             </View>
             <View style={styles.userData}>
               <Text style={[styles.name, { color: palette.primary }]}>{name}</Text>
@@ -151,7 +161,7 @@ const SettingsScreen = ({ navigation }) => {
           if (tab === 'bookmarks') navigation.navigate('Bookmarks');
         }}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -190,6 +200,11 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  avatarImage: {
+    width: 69,
+    height: 67,
+    borderRadius: 50,
   },
   // eslint-disable-next-line react-native/no-color-literals
   avatarDot: {

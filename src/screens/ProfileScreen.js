@@ -3,11 +3,13 @@
  * Отображает детальную информацию о пользователе
  */
 import { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Image } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
 import { getTheme } from '../styles/colors';
-import { getUserData, removeToken, clearAllData } from '../utils/storage';
+import * as ImagePicker from 'expo-image-picker';
+import { getUserData, removeToken, clearAllData, saveUserData } from '../utils/storage';
 import BottomNavigation from '../components/BottomNavigation';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const ProfileScreen = ({ navigation }) => {
   const { isDark } = useTheme();
@@ -33,8 +35,36 @@ const ProfileScreen = ({ navigation }) => {
     );
   };
 
-  const handleAvatarPress = () => {
-    Alert.alert('Загрузка аватара', 'Функция загрузки аватара будет реализована');
+  const handleAvatarPress = async () => {
+    try {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        return Alert.alert(
+          'Требуется разрешение',
+          'Разрешите доступ к галерее, чтобы сменить аватар',
+        );
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        aspect: [1, 1],
+        quality: 0.8,
+      });
+
+      if (result.canceled || !result.assets?.length) return;
+
+      const uri = result.assets[0].uri;
+
+      // локально обновляем стейт
+      const updated = { ...(user || {}), avatarUri: uri };
+      setUser(updated);
+
+      // и сохраняем в AsyncStorage
+      await saveUserData({ avatarUri: uri });
+    } catch (error) {
+      console.error('Ошибка смены аватара:', error);
+      Alert.alert('Ошибка', 'Не удалось обновить аватар. Попробуйте ещё раз.');
+    }
   };
 
   const handleChangePassword = () => {
@@ -49,7 +79,7 @@ const ProfileScreen = ({ navigation }) => {
         style: 'destructive',
         onPress: async () => {
           await removeToken();
-          await clearAllData();
+          // НЕ трогаем clearAllData, чтобы не терять профиль/тему/настройки
           navigation.reset({ index: 0, routes: [{ name: 'Login' }] });
         },
       },
@@ -79,7 +109,10 @@ const ProfileScreen = ({ navigation }) => {
   ];
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: colors.background }]}
+      edges={['top']}
+    >
       {/* Header */}
       <View style={[styles.header, { backgroundColor: colors.background }]}>
         <Text style={[styles.headerTitle, { color: colors.text }]}>Профиль</Text>
@@ -94,7 +127,15 @@ const ProfileScreen = ({ navigation }) => {
             activeOpacity={0.7}
           >
             <View style={[styles.avatar, { borderColor: colors.primary }]}>
-              <View style={styles.avatarPlaceholder} />
+              {user?.avatarUri ? (
+                <Image
+                  source={{ uri: user.avatarUri }}
+                  style={styles.avatarImage}
+                  resizeMode="cover"
+                />
+              ) : (
+                <View style={styles.avatarPlaceholder} />
+              )}
             </View>
             <View style={[styles.editIcon, { backgroundColor: colors.primary }]}>
               <Text style={styles.editIconText}>📷</Text>
@@ -153,7 +194,7 @@ const ProfileScreen = ({ navigation }) => {
           else if (tab === 'settings') navigation.navigate('Settings');
         }}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -183,6 +224,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#EDEDED',
+  },
+  avatarImage: {
+    width: 96,
+    height: 96,
+    borderRadius: 48,
   },
   avatarPlaceholder: {
     width: 60,

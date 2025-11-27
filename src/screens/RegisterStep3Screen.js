@@ -19,6 +19,7 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 import { useTheme } from '../context/ThemeContext';
 import { getTheme } from '../styles/colors';
+import { saveUserData } from '../utils/storage';
 
 const RegisterStep3Screen = ({ navigation, route }) => {
   const { isDark } = useTheme();
@@ -87,10 +88,28 @@ const RegisterStep3Screen = ({ navigation, route }) => {
     setFormErrors({});
     setIsSending(true);
 
-    setTimeout(() => {
+    try {
+      // сохраняем профиль пользователя локально
+      await saveUserData({
+        firstName,
+        lastName,
+        middleName,
+        birthDate,
+        gender,
+        email,
+        avatarUri: photoProfile?.uri || null,
+      });
+
+      // имитация отправки на сервер, как было
+      setTimeout(() => {
+        setIsSending(false);
+        navigation.replace('RegisterSuccess');
+      }, 2000);
+    } catch (e) {
+      console.error('Ошибка сохранения профиля:', e);
       setIsSending(false);
-      navigation.replace('RegisterSuccess');
-    }, 2000);
+      Alert.alert('Ошибка', 'Не удалось сохранить профиль. Попробуйте ещё раз.');
+    }
   };
 
   const formComplete = driverNumber && issueDate && photoLicense && photoPassport;

@@ -10,6 +10,7 @@ import { mockSearchCars } from '../utils/mockData';
 import BottomNavigation from '../components/BottomNavigation';
 import Button from '../components/Button';
 import LoaderScreen from './LoaderScreen';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const SearchResultsScreen = ({ navigation, route }) => {
   const { isDark } = useTheme();
@@ -138,7 +139,7 @@ const SearchResultsScreen = ({ navigation, route }) => {
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={['top']}>
       {/* Header */}
       <View style={[styles.header, { backgroundColor: theme.background }]}>
         <TouchableOpacity
@@ -188,7 +189,7 @@ const SearchResultsScreen = ({ navigation, route }) => {
           if (tab === 'bookmarks') navigation.navigate('Bookmarks');
         }}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 
