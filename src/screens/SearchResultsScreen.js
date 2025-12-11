@@ -51,13 +51,11 @@ const SearchResultsScreen = ({ navigation, route }) => {
   };
 
   const openBooking = id => {
-    console.log('Забронировать автомобиль:', id);
-    // navigation.navigate('Booking', { id });
+    navigation.navigate('Rent', { carId: id });
   };
 
   const openDetails = id => {
-    console.log('Открыть детали автомобиля:', id);
-    // navigation.navigate('CarDetails', { id });
+    navigation.navigate('CarDetails', { carId: id });
   };
 
   const renderCarItem = item => (

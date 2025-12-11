@@ -11,6 +11,8 @@ const KEYS = {
   USER_DATA: '@user_data',
   THEME: '@theme',
   NOTIFICATIONS_ENABLED: '@notifications_enabled',
+  BOOKINGS: '@bookings',
+  FAVORITE_CARS: '@favorite_cars',
 };
 
 // Сохранение токена
@@ -146,5 +148,89 @@ export const getNotificationsEnabled = async () => {
   } catch (error) {
     console.error('Ошибка получения настроек уведомлений:', error);
     return true;
+  }
+};
+
+// Добавление бронирования
+export const addBooking = async booking => {
+  try {
+    const existing = await AsyncStorage.getItem(KEYS.BOOKINGS);
+    const current = existing ? JSON.parse(existing) : [];
+
+    const next = [...current, booking];
+    await AsyncStorage.setItem(KEYS.BOOKINGS, JSON.stringify(next));
+    return true;
+  } catch (error) {
+    console.error('Ошибка сохранения бронирования:', error);
+    return false;
+  }
+};
+
+// Получение всех бронирований
+export const getBookings = async () => {
+  try {
+    const data = await AsyncStorage.getItem(KEYS.BOOKINGS);
+    return data ? JSON.parse(data) : [];
+  } catch (error) {
+    console.error('Ошибка получения бронирований:', error);
+    return [];
+  }
+};
+
+// Обновление статуса бронирования
+export const updateBookingStatus = async (bookingId, status) => {
+  try {
+    const existing = await AsyncStorage.getItem(KEYS.BOOKINGS);
+    const current = existing ? JSON.parse(existing) : [];
+
+    const updated = current.map(b => (b.id === bookingId ? { ...b, status } : b));
+
+    await AsyncStorage.setItem(KEYS.BOOKINGS, JSON.stringify(updated));
+    return true;
+  } catch (error) {
+    console.error('Ошибка обновления бронирования:', error);
+    return false;
+  }
+};
+// Получение избранных автомобилей (список id)
+export const getFavoriteCars = async () => {
+  try {
+    const data = await AsyncStorage.getItem(KEYS.FAVORITE_CARS);
+    return data ? JSON.parse(data) : [];
+  } catch (error) {
+    console.error('Ошибка получения избранных автомобилей:', error);
+    return [];
+  }
+};
+
+// Добавление автомобиля в избранное
+export const addFavoriteCar = async carId => {
+  try {
+    const data = await AsyncStorage.getItem(KEYS.FAVORITE_CARS);
+    const current = data ? JSON.parse(data) : [];
+
+    if (current.includes(carId)) return true;
+
+    const next = [...current, carId];
+    await AsyncStorage.setItem(KEYS.FAVORITE_CARS, JSON.stringify(next));
+    return true;
+  } catch (error) {
+    console.error('Ошибка добавления избранного автомобиля:', error);
+    return false;
+  }
+};
+
+// Удаление автомобиля из избранного
+export const removeFavoriteCar = async carId => {
+  try {
+    const data = await AsyncStorage.getItem(KEYS.FAVORITE_CARS);
+    const current = data ? JSON.parse(data) : [];
+
+    const next = current.filter(id => id !== carId);
+    await AsyncStorage.setItem(KEYS.FAVORITE_CARS, JSON.stringify(next));
+    return true;
+  } catch (error) {
+    console.error('Ошибка удаления избранного автомобиля:', error);
+    return false;
   }
 };

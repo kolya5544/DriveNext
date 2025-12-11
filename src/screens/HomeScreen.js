@@ -15,6 +15,7 @@ import {
 import { useTheme } from '../context/ThemeContext';
 import { getTheme } from '../styles/colors';
 import { mockGetCars } from '../utils/mockData';
+import { mockGetCarDetails } from '../utils/mockData';
 import BottomNavigation from '../components/BottomNavigation';
 import LoadingIndicator from '../components/LoadingIndicator';
 import Button from '../components/Button';
@@ -55,8 +56,13 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
-  const bookCar = id => console.log('Забронировать автомобиль:', id);
-  const viewCarDetails = id => console.log('Детали автомобиля:', id);
+  const bookCar = id => {
+    navigation.navigate('Rent', { carId: id });
+  };
+
+  const viewCarDetails = id => {
+    navigation.navigate('CarDetails', { carId: id });
+  };
 
   const renderCarItem = car => (
     <View key={car.id} style={[styles.carCard, { borderColor: theme.border }]}>

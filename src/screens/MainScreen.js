@@ -7,20 +7,7 @@ const MainScreen = () => {
   const { isDark } = useTheme();
   const theme = getTheme(isDark);
 
-  return (
-    <View style={[styles.container, { backgroundColor: theme.background }]}>
-      {/* Кнопка переключения темы */}
-      <View style={styles.themeToggleContainer}>
-        <ThemeToggle />
-      </View>
-
-      <Text style={[styles.title, { color: theme.text }]}>Главный экран</Text>
-      <Text style={[styles.subtitle, { color: theme.textLight }]}>
-        Здесь будет список доступных автомобилей
-      </Text>
-      <Text style={styles.emoji}>🚗</Text>
-    </View>
-  );
+  return <View style={[styles.container, { backgroundColor: theme.background }]}></View>;
 };
 
 const styles = StyleSheet.create({

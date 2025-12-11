@@ -40,7 +40,7 @@ const SettingsScreen = ({ navigation }) => {
   const onMenuPress = key => {
     switch (key) {
       case 'bookings':
-        console.log('Мои бронирования');
+        navigation.navigate('Bookings');
         break;
       case 'theme':
         console.log('Тема');

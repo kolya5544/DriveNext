@@ -200,24 +200,6 @@ const LoginScreen = ({ navigation }) => {
             <Text style={styles.primaryButtonText}>{loading ? 'Вход...' : 'Войти'}</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={[
-              styles.secondaryButton,
-              { backgroundColor: theme.background, borderColor: theme.border },
-            ]}
-            onPress={handleGoogleLogin}
-          >
-            <View style={styles.googleIcon}>
-              <View style={styles.googleIconBlue} />
-              <View style={styles.googleIconGreen} />
-              <View style={styles.googleIconYellow} />
-              <View style={styles.googleIconRed} />
-            </View>
-            <Text style={[styles.secondaryButtonText, { color: theme.text }]}>
-              Войти через Google
-            </Text>
-          </TouchableOpacity>
-
           <View style={styles.registerRow}>
             <Text style={[styles.registerText, { color: theme.text }]}>Нет аккаунта? </Text>
             <TouchableOpacity onPress={() => navigation.navigate('RegisterStep1')}>

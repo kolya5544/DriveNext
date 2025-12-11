@@ -91,48 +91,93 @@ export const mockCheckConnection = async () => {
 export const mockCars = [
   {
     id: '1',
-    model: 'S 500 Sedan',
-    brand: 'Mercedes-Benz',
+    model: 'Model 3 2019',
+    brand: 'Tesla',
     price: 2500,
     transmission: 'A/T',
-    fuel: 'Бензин',
-    image: require('../../assets/images/car_default.png'),
+    fuel: 'Электро',
+    image: require('../../assets/images/car_three.png'),
     seats: 5,
     doors: 4,
+    drive: 'RWD',
+    address: 'Авиамоторная ул., 8, стр. 2',
+    description:
+      'Tesla Model 3 2019 оснащена электродвигателем с мгновенным откликом и поддерживает быстрый заряд. Идеально подходит для городской езды и дальних поездок.',
   },
   {
     id: '2',
-    model: 'GLE 350',
-    brand: 'Mercedes-Benz',
-    price: 900,
+    model: '3 Series 2020',
+    brand: 'BMW',
+    price: 2200,
     transmission: 'A/T',
     fuel: 'Бензин',
-    image: require('../../assets/images/car_default.png'),
+    image: require('../../assets/images/car_two.png'),
     seats: 5,
     doors: 4,
-    drive: '4WD',
+    drive: 'RWD',
+    address: 'Шоссе Энтузиастов, 12',
+    description:
+      'BMW 3 Series 2020 сочетает спортивный характер и комфорт. Точный руль и динамичный двигатель делают поездки максимально приятными.',
   },
   {
     id: '3',
-    model: 'E 200',
-    brand: 'Mercedes-Benz',
+    model: 'A4 2018',
+    brand: 'Audi',
     price: 1800,
     transmission: 'A/T',
     fuel: 'Бензин',
     image: require('../../assets/images/car_default.png'),
     seats: 5,
     doors: 4,
+    drive: 'quattro',
+    address: 'Ленинградский проспект, 45',
+    description:
+      'Audi A4 2018 — сбалансированный седан с фирменным полным приводом quattro и комфортным салоном для длительных поездок.',
   },
   {
     id: '4',
-    model: 'C 300',
-    brand: 'Mercedes-Benz',
-    price: 2000,
+    model: 'Camry 2021',
+    brand: 'Toyota',
+    price: 1900,
+    transmission: 'A/T',
+    fuel: 'Бензин',
+    image: require('../../assets/images/car_two.png'),
+    seats: 5,
+    doors: 4,
+    drive: 'FWD',
+    address: 'Пресненская наб., 10',
+    description:
+      'Toyota Camry 2021 — надёжный бизнес-седан с мягкой подвеской и просторным салоном. Подходит для ежедневной эксплуатации.',
+  },
+  {
+    id: '5',
+    model: 'K5 2021',
+    brand: 'Kia',
+    price: 1500,
     transmission: 'A/T',
     fuel: 'Бензин',
     image: require('../../assets/images/car_default.png'),
     seats: 5,
     doors: 4,
+    drive: 'FWD',
+    address: 'Варшавское шоссе, 95',
+    description:
+      'Kia K5 2021 выделяется ярким дизайном и богатым оснащением. Отличный вариант для комфортных поездок по городу.',
+  },
+  {
+    id: '6',
+    model: 'Solaris 2020',
+    brand: 'Hyundai',
+    price: 1100,
+    transmission: 'M/T',
+    fuel: 'Бензин',
+    image: require('../../assets/images/car_two.png'),
+    seats: 5,
+    doors: 4,
+    drive: 'FWD',
+    address: 'Кутузовский проспект, 30',
+    description:
+      'Hyundai Solaris 2020 — экономичный и практичный автомобиль для повседневных задач с низким расходом топлива.',
   },
 ];
 
@@ -162,5 +207,43 @@ export const mockSearchCars = async query => {
         cars: filtered,
       });
     }, 1500);
+  });
+};
+
+// Имитация API запроса на получение деталей одного автомобиля
+export const mockGetCarDetails = async carId => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      const car = mockCars.find(c => c.id === String(carId));
+
+      if (car) {
+        resolve({ success: true, car });
+      } else {
+        resolve({ success: false, error: 'Автомобиль не найден' });
+      }
+    }, 800);
+  });
+};
+// Внутреннее хранилище избранных автомобилей
+const favoriteCarIds = new Set();
+
+// Имитация API запроса на добавление/удаление автомобиля из избранного
+export const mockToggleFavoriteCar = async carId => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      if (favoriteCarIds.has(carId)) {
+        favoriteCarIds.delete(carId);
+        resolve({
+          success: true,
+          isFavorite: false,
+        });
+      } else {
+        favoriteCarIds.add(carId);
+        resolve({
+          success: true,
+          isFavorite: true,
+        });
+      }
+    }, 500);
   });
 };

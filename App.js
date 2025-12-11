@@ -26,6 +26,11 @@ import ProfileScreen from './src/screens/ProfileScreen';
 import SearchResultsScreen from './src/screens/SearchResultsScreen';
 import LoaderScreen from './src/screens/LoaderScreen';
 import BookmarksScreen from './src/screens/BookmarksScreen';
+import CarDetailsScreen from './src/screens/CarDetailsScreen';
+import RentScreen from './src/screens/RentScreen';
+import RentSuccessScreen from './src/screens/RentSuccessScreen';
+import BookingsScreen from './src/screens/BookingsScreen';
+import BookingDetailsScreen from './src/screens/BookingDetailsScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -57,6 +62,11 @@ export default function App() {
           <Stack.Screen name="SearchResults" component={SearchResultsScreen} />
           <Stack.Screen name="Loader" component={LoaderScreen} />
           <Stack.Screen name="Bookmarks" component={BookmarksScreen} />
+          <Stack.Screen name="CarDetails" component={CarDetailsScreen} />
+          <Stack.Screen name="Rent" component={RentScreen} />
+          <Stack.Screen name="RentSuccess" component={RentSuccessScreen} />
+          <Stack.Screen name="Bookings" component={BookingsScreen} />
+          <Stack.Screen name="BookingDetails" component={BookingDetailsScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </ThemeProvider>

@@ -32,21 +32,6 @@ const SplashScreen = ({ navigation }) => {
           source={require('../../assets/images/splash_skreen.jpg')}
         />
       </View>
-
-      <View style={styles.bottomBlock}>
-        <View style={[styles.mainBtn, { backgroundColor: palette.primary }]}>
-          <Text style={styles.mainBtnText}>Начать</Text>
-        </View>
-
-        <View
-          style={[
-            styles.altBtn,
-            { backgroundColor: palette.background, borderColor: palette.border },
-          ]}
-        >
-          <Text style={[styles.altBtnText, { color: palette.text }]}>Продолжить с Google</Text>
-        </View>
-      </View>
     </View>
   );
 };
